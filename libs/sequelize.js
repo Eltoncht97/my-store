@@ -17,7 +17,7 @@ if(config.isProd) {
     rejectUnauthorized: false
   }
 }
-
+console.log(options)
 const sequelize = new Sequelize(config.dbUrl, options)
 
 setupModels(sequelize)
