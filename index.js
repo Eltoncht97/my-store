@@ -4,19 +4,20 @@ const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require('
 const routerApi = require('./routes')
 const app = express()
 const port = process.env.PORT || 3001
-const whiteList = ['http://localhost:8080']
-const options = {
-  origin: (origin, callback) => {
-    if(whiteList.includes(origin) || !origin) {
-      callback(null, true)
-    }else {
-      callback(new Error('Access denied'))
-    }
-  }
-}
+// const whiteList = ['http://localhost:8080']
+// const options = {
+//   origin: (origin, callback) => {
+//     if(whiteList.includes(origin) || !origin) {
+//       callback(null, true)
+//     }else {
+//       callback(new Error('Access denied'))
+//     }
+//   }
+// }
 
 app.use(express.json())
-app.use(cors(options))
+// app.use(cors(options))
+app.use(cors())
 
 app.get('/', (req, res) => {
   res.send('Hello World')
