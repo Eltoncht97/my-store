@@ -6,7 +6,7 @@ const {
   updateCustomerSchema,
   createCustomerSchema,
   getCustomerSchema,
-} = require('./../schemas/Customer.schema');
+} = require('./../schemas/customer.schema');
 
 const router = express.Router();
 const service = new CustomerService();
