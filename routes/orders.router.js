@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const validatorHandler = require('../middlewares/validator.handler');
 const { createOrderSchema, getOrderSchema, addItemSchema } = require('../schemas/order.schema');
 
@@ -31,11 +32,12 @@ router.get(
 
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createOrderSchema, 'body'),
   async (req, res, next) => {
     try {
-      const body = req.body;
-      const newOrder = await service.create(body);
+      const user = req.user
+      const newOrder = await service.create(user.sub);
       res.status(201).json(newOrder);
     } catch (error) {
       next(error);
@@ -45,6 +47,7 @@ router.post(
 
 router.post(
   '/add-item',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(addItemSchema, 'body'),
   async (req, res, next) => {
     try {

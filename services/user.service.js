@@ -1,14 +1,17 @@
 const boom = require('@hapi/boom');
-// const getConnection = require('../libs/postgres');
-// const { User } = models
-// const { boomify } = require('@hapi/boom');
-const { models } = require('../libs/sequelize')
+const { models } = require('../libs/sequelize');
+const bcrypt = require('bcrypt');
 
 class UserService {
   constructor() {}
 
   async create(data) {
-    const newUser = await models.User.create(data)
+    const hash = await bcrypt.hash(data.password, 10);
+    const newUser = await models.User.create({
+      ...data,
+      password: hash,
+    });
+    delete newUser.dataValues.password;
     return newUser;
   }
 
@@ -16,28 +19,38 @@ class UserService {
     // const client = await getConnection()
     // const rta = await client.query('SELECT * FROM tasks')
     const rta = await models.User.findAll({
-      include: ['customer']
-    })
+      include: ['customer'],
+    });
     return rta;
   }
 
   async findOne(id) {
-    const user = await models.User.findByPk(id)
-    if(!user) {
-      throw boom.notFound('user not found')
+    const user = await models.User.findByPk(id);
+    if (!user) {
+      throw boom.notFound('user not found');
     }
     return user;
   }
 
+  async findByEmail(email) {
+    const user = await models.User.findOne({
+      where: { email },
+    });
+    // if(!user) {
+    //   throw boom.notFound('user not found')
+    // }
+    return user;
+  }
+
   async update(id, changes) {
-    const user = await this.findOne(id)
-    const rta  = await user.update(changes)
+    const user = await this.findOne(id);
+    const rta = await user.update(changes);
     return rta;
   }
 
   async delete(id) {
-    const user = await this.findOne(id)
-    await user.destroy()
+    const user = await this.findOne(id);
+    await user.destroy();
     return { id };
   }
 }
