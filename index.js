@@ -8,6 +8,8 @@ const {
 } = require('./middlewares/error.handler');
 const routerApi = require('./routes');
 const {checkApiKey} = require('./middlewares/auth.handler');
+const passport = require('passport');
+
 const app = express();
 const port = process.env.PORT || 3001;
 const whiteList = ['http://localhost:8080'];
@@ -23,10 +25,8 @@ const options = {
 
 app.use(express.json());
 app.use(cors(options));
-
-const passport = require('passport');
-
 app.use(passport.initialize());
+
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
